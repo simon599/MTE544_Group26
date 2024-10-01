@@ -6,7 +6,7 @@ import rclpy
 from rclpy.node import Node
 
 from utilities import Logger, euler_from_quaternion
-from rclpy.qos import QoSProfile
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 
 # TODO Part 3: Import message types needed: 
     # For sending velocity commands to the robot: Twist
@@ -79,16 +79,46 @@ class motion_executioner(Node):
     # such: Time.from_msg(imu_msg.header.stamp).nanoseconds
     # You can save the needed fields into a list, and pass the list to the log_values function in utilities.py
 
+    # Simon's notes: https://docs.ros2.org/foxy/api/sensor_msgs/msg/Imu.html
     def imu_callback(self, imu_msg: Imu):
-        ...    # log imu msgs
+        # Extract necessary data, not sure which ones we need but here's a few main ones
+        acc_x = imu_msg.linear_acceleration.x
+        acc_y = imu_msg.linear_acceleration.y
+        angular_z = imu_msg.angular_velocity.z
+        timestamp = Time.from_msg(imu_msg.header.stamp).nanoseconds
+    
+        # Log the values
+        self.imu_logger.log_values([acc_x, acc_y, angular_z, timestamp])
         
+        # Mark as initialized, not sure if needed, but there is an imu_initialized = False up top so might be useful
+        self.imu_initialized = True
+        
+    # Simon's notes: https://docs.ros2.org/foxy/api/nav_msgs/msg/Odometry.html 
     def odom_callback(self, odom_msg: Odometry):
+        # Extract necessary data, not sure which ones we need but here's a few main ones
+        x = odom_msg.pose.pose.position.x
+        y = odom_msg.pose.pose.position.y
+        roll, pitch, yaw = euler_from_quaternion(odom_msg.pose.pose.orientation) #not sure which one we are supposed to be implementing in utilities.py, modify as needed
+        timestamp = Time.from_msg(odom_msg.header.stamp).nanoseconds
+
+        # Log the values
+        self.odom_logger.log_values([x, y, yaw, timestamp])
         
-        ... # log odom msgs
-                
+        # Mark as initialized, not sure if needed, but there is an imu_initialized = False up top so might be useful
+        self.odom_initialized = True
+
+    # Simon's notes: https://docs.ros2.org/latest/api/sensor_msgs/msg/LaserScan.html 
     def laser_callback(self, laser_msg: LaserScan):
+        # Extract necessary data, not sure which ones we need but here's a few main ones
+        ranges = list(laser_msg.ranges)
+        angle_increment = laser_msg.angle_increment
+        timestamp = Time.from_msg(laser_msg.header.stamp).nanoseconds
         
-        ... # log laser msgs with position msg at that time
+        # Log the values
+        self.laser_logger.log_values([ranges, angle_increment, timestamp])
+        
+        # Mark as initialized, not sure if needed, but there is an imu_initialized = False up top so might be useful
+        self.laser_initialized = True
                 
     def timer_callback(self):
         
@@ -117,21 +147,30 @@ class motion_executioner(Node):
         
     
     # TODO Part 4: Motion functions: complete the functions to generate the proper messages corresponding to the desired motions of the robot
-
+    #Simon's notes: https://docs.ros2.org/galactic/api/geometry_msgs/msg/Twist.html 
     def make_circular_twist(self):
         
         msg=Twist()
-        ... # fill up the twist msg for circular motion
+        msg.linear.x = 0.5 #move forward
+        msg.angular.z = 0.5  #rotate
         return msg
 
     def make_spiral_twist(self):
         msg=Twist()
-        ... # fill up the twist msg for spiral motion
+        
+        self.radius_+=0.01
+        msg.linear.x = self.radius_ #increasing linear velocity
+
+        msg.angular.z=0.5 #constant rotational speed
         return msg
     
     def make_acc_line_twist(self):
         msg=Twist()
-        ... # fill up the twist msg for line motion
+        
+        self.radius_+=0.01
+        msg.linear.x = self.radius_ #increasing linear velocity
+        
+        msg.angular.z=0.0 #no rotation
         return msg
 
 import argparse
