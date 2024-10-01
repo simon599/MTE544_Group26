@@ -1,3 +1,5 @@
+#Simon's notes: tutorial for publisher and subscriber https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Writing-A-Simple-Py-Publisher-And-Subscriber.html#write-the-subscriber-node
+
 # Imports
 import rclpy
 
@@ -20,7 +22,6 @@ from rclpy.time import Time
 # You may add any other imports you may need/want to use below
 # import ...
 
-
 CIRCLE=0; SPIRAL=1; ACC_LINE=2
 motion_types=['circle', 'spiral', 'line']
 
@@ -40,7 +41,8 @@ class motion_executioner(Node):
         self.laser_initialized=False
         
         # TODO Part 3: Create a publisher to send velocity commands by setting the proper parameters in (...)
-        self.vel_publisher = self.create_publisher(Twist, '/cmd_vel', 10)
+        #Simon's notes: Twist means velocity, "velocity" is the name of the topic, queue size=10
+        self.vel_publisher = self.create_publisher(Twist, '/velocity', 10)
                 
         # loggers
         self.imu_logger=Logger('imu_content_'+str(motion_types[motion_type])+'.csv', headers=["acc_x", "acc_y", "angular_z", "stamp"])
@@ -48,20 +50,25 @@ class motion_executioner(Node):
         self.laser_logger=Logger('laser_content_'+str(motion_types[motion_type])+'.csv', headers=["ranges", "angle_increment", "stamp"])
         
         # TODO Part 3: Create the QoS profile by setting the proper parameters in (...)
-        qos=QoSProfile(...)
+        #Simon's notes: not sure if this is correct or all necessary, since I think only the depth parameter is mandatory
+        #https://discuss.px4.io/t/qos-profile-for-ros2-in-python/33043
+        qos=QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=10)
 
         # TODO Part 5: Create below the subscription to the topics corresponding to the respective sensors
         # IMU subscription
-        
-        ...
+        #Simon's notes: Sensor command name, imu/data is the name of the topic, imu_callback gets called as soon as it receives a message, queue size=10
+        self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
         
         # ENCODER subscription
-
-        ...
+        #Simon's notes: Sensor command name, odom is the name of the topic, odom_callback gets called as soon as it receives a message, queue size=10
+        self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
         
         # LaserScan subscription 
-        
-        ...
+        #Simon's notes: Sensor command name, scan is the name of the topic, laser_callback gets called as soon as it receives a message, queue size=10
+        self.create_subscription(LaserScan, '/scan', self.laser_callback, 10)
         
         self.create_timer(0.1, self.timer_callback)
 
