@@ -10,10 +10,10 @@ from rclpy.qos import QoSProfile
     # For sending velocity commands to the robot: Twist
     # For the sensors: Imu, LaserScan, and Odometry
 # Check the online documentation to fill in the lines below
-from ... import Twist
+from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Imu
-from ... import LaserScan
-from ... import Odometry
+from sensor_msgs.msg import LaserScan
+from nav_msgs.msg import Odometry
 
 from rclpy.time import Time
 
