@@ -24,9 +24,8 @@ class Logger:
             vals_str=""
 
             # TODO Part 5: Write the values from the list to the file
-            ...
-            
-            vals_str+="\n"
+            # Janani: loop through list to log values with comma separation.
+            vals_str += ", ".join(map(str, values_list))
             
             file.write(vals_str)
             
@@ -96,7 +95,7 @@ def euler_from_quaternion(quat):
     pitch = asin(2*(w*y - z*x))
     yaw = atan2(2*(w*x + x*y), 1 - 2*(y**2 + z**2))
 
-    ... # just unpack yaw
+    # just unpack yaw
     return yaw
 
 
