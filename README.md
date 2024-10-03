@@ -137,6 +137,8 @@ These plots should help you with your discussions at the end of this manual.
 ROS 2 provides some packages that allow to perform mapping of the environment. This utilized SLAM (Simultaneous Localization and Mapping) provided by the Nav2 package. 
 This will be very useful for the later labs, it will be especially needed for LAB-3 and LAB-4.
 
+**Either** complete this part in lab with the TurtleBot4 or in simulation with the TurtleBot3 (if you run out of time in lab). If your VM is slow, go ahead and use the lab PC. 
+
 In real world with TurtleBot4:
 
 See also this link for more details in [turtlebot4 manual](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/generate_map.html):
@@ -149,8 +151,6 @@ See also this link for more details in [turtlebot4 manual](https://turtlebot.git
 - In another terminal run RViz: ```ros2 launch turtlebot4_viz view_robot.launch.py```. This will help you to see the map, robot and the scan. Keep the terminal running.
 - Using the teleop node, drive the robot around until you can sufficiently map at least a corner of the room. Bring the RViz window to the front while driving the robot. You should see areas and walls appearing on the map in RViz as the robot gets closer to obstacles/items. Note that the colors of the map reflect the confidence of the robot in thos locations. You should see that as you drive the robot closer to those areas, the confidence increases and the map becomes clearer and the base becomes more opaque.
 - In a new terminal, save the map with ```ros2 run nav2_map_server map_saver_cli -f map```. You should see the map saved in the folder where you are currently located. You should have 2 files, one .pgm, and one .yaml.
-
-You can do next part in the lab (time allowing) or at home. If your VM is slow, go ahead and use the lab PC.
 
 In simulation with TurtleBot3:
 - Follow the instructions in `tbt3Simulation.md` to run the robot in simulation 
