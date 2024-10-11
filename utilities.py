@@ -24,8 +24,9 @@ class Logger:
             vals_str=""
 
             # TODO Part 5: Write the values from the list to the file
-            # Janani: loop through list to log values with comma separation.
+            # Log values with comma separation.
             vals_str += ", ".join(map(str, values_list))
+            vals_str += "\n"
             
             file.write(vals_str)
             
@@ -84,16 +85,17 @@ def euler_from_quaternion(quat):
     Convert quaternion (w in last place) to euler roll, pitch, yaw.
     quat = [x, y, z, w]
     """
-    # Suhyma's comment: roll = rot about x, pitch = rot about y, yaw = rot about z
+    # Unpack components of the given (unit) quaternion.
     x = quat.x
     y = quat.y
     z = quat.z
     w = quat.w
 
-    # Suhyma: Not too sure if we are supposed to implement these individually or do a bunch of matrix math...the matrix math option doesn't seem very efficient
-    roll = atan2(2*(w*x + y*z), 1 - 2*(x**2 + y**2))
-    pitch = asin(2*(w*y - z*x))
-    yaw = atan2(2*(w*x + x*y), 1 - 2*(y**2 + z**2))
+    # roll = rot about x, pitch = rot about y, yaw = rot about z
+    # Calculate yaw using this formula
+    roll = atan2(2.0 * (w * x + y * z), 1.0 - 2.0 * (x**2 + y**2))
+    pitch = asin(2.0 * (w * y - x * z))
+    yaw = atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y**2 + z**2))
 
     # just unpack yaw
     return yaw
