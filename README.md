@@ -6,7 +6,7 @@
 This repo is made to help the students make a complete mobile robot stack from scratch! The course is covered in MTE544 at the University of Waterloo taught by 
 [Prof. Yue Hu](https://uwaterloo.ca/mechanical-mechatronics-engineering/profile/y526hu). 
 
-This set of labs and software stack was originally implemented by Dr. Ahmad Alghooneh (https://github.com/aalghooneh).
+This set of labs and software stack was originally implemented by Dr. Ahmad Alghooneh.
 
 ## What do you need to carry through this course?
 The course code is developed based on TurtleBot4 (tb4) topics but as long as you have a ROS/ROS2-based mobile robot with lidar, camera, IMU, and encoders you can follow all the labs. 
