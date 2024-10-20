@@ -34,7 +34,7 @@
  **From Report on LEARN:**
 - ```4``` marks for plots with title, label name for axis, legends, different shapes/colors for each data, and grids.
 - ```2``` marks for plots to be as following:
-    - for odom two plots:
+    - for odom two plots (count as 1):
         - 'x - vs - y' 
         - 'x, y, th- vs -t'
     - for IMU:
