@@ -61,12 +61,13 @@ class PID_ctrl:
             dt=(t1.nanoseconds - t0.nanoseconds) / 1e9
             
             dt_avg+=dt
-
+            
             # use constant dt if the messages arrived inconsistent
             # for example dt=0.1 overwriting the calculation          
             
             # TODO Part 5: calculate the error dot 
-            # error_dot+= ... 
+            error_diff = self.history[i][0] - self.history[i-1][0]
+            error_dot += error_diff / dt
             
         error_dot/=len(self.history)
         dt_avg/=len(self.history)
@@ -75,27 +76,25 @@ class PID_ctrl:
         sum_=0
         for hist in self.history:
             # TODO Part 5: Gather the integration
-            # sum_+=...
+            sum_+= hist[0]
             pass
         
         error_int=sum_*dt_avg
         
         # TODO Part 4: Log your errors
-        self.logger.log_values( ... )
+        # 
+        self.logger.log_values( latest_error, error_dot, error_int and Time.from_msg(stamp).nanoseconds)
         
         # TODO Part 4: Implement the control law of P-controller
         if self.type == P:
-            return ... # complete
+            return latest_error*self.kp
         
         # TODO Part 5: Implement the control law corresponding to each type of controller
         elif self.type == PD:
-            pass
-            # return ... # complete
+            return latest_error*self.kp+error_dot*self.kd
         
         elif self.type == PI:
-            pass
-            # return ... # complete
+            return latest_error*self.kp+error_int*self.ki
         
         elif self.type == PID:
-            pass
-            # return ... # complete
+            return latest_error*self.kp+error_int*self.ki+error_dot*self.kd
