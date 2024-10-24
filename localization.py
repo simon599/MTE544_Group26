@@ -28,28 +28,27 @@ class localization(Node):
         self.pose=None
         
         if localizationType == rawSensor:
-        # TODO Part 3: subscribe to the position sensor topic (Odometry)
-        # Copied from tutorial 3
-            self.create_subscription(Odometry, "/odom", self.odom_callback,
-            qos_profile=odom_qos)
+            # TODO Part 3: subscribe to the position sensor topic (Odometry)
+            # Copied from tutorial 3
+            self.create_subscription(Odometry, "/odom", self.odom_callback, qos_profile=odom_qos)
         else:
             print("This type doesn't exist", sys.stderr)
     
     
     def odom_callback(self, pose_msg):
         
-        # TODO Part 3: Read x,y, theta, and record the stamp
+        # TODO Part 3: Read x, y, theta, and record the stamp
         x = pose_msg.pose.pose.position.x
         y = pose_msg.pose.pose.position.y
-        orientation_q = pose_msg.pose.pose.orientation
+        orientation_quat = pose_msg.pose.pose.orientation
         # Convert quaternion to Euler angles
-        yaw = euler_from_quaternion(orientation_q)
-        timestamp = Time.from_msg(pose_msg.header.stamp).nanoseconds
+        theta = euler_from_quaternion(orientation_quat)
+        timestamp = pose_msg.header.stamp
 
-        self.pose=[x,y,yaw,timestamp]
+        self.pose = [x, y, theta, timestamp]
         
         # Log the data
-        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], timestamp])
+        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
     
     def getPose(self):
         return self.pose
@@ -59,7 +58,9 @@ class localization(Node):
 # This is to make sure this node functions right before using it in decision.py
     
 if __name__ == '__main__':
+    # startup the localization node
     init()
+
     localization_node = localization()
 
     try:
