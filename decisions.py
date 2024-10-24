@@ -24,11 +24,12 @@ from controller import controller, trajectoryController
 
 class decision_maker(Node):
     
-    def __init__(self, publisher_msg, publishing_topic, qos_publisher, goalPoint, rate=10, motion_type=POINT_PLANNER):
+    def __init__(self, publisher_msg, publishing_topic, qos_publisher, goalPoint=[1.0, 1.0], rate=10, motion_type=POINT_PLANNER):
 
         super().__init__("decision_maker")
 
         #TODO Part 4: Create a publisher for the topic responsible for robot's motion
+        # initialize publisher to send velocity commands
         self.publisher = self.create_publisher(publisher_msg, publishing_topic, qos_publisher)
 
         publishing_period=1/rate
@@ -47,9 +48,6 @@ class decision_maker(Node):
 
         else:
             print("Error! you don't have this planner", file=sys.stderr)
-
-        # set an error threshold
-        self.error_thresh = 1
 
         # Instantiate the localization, use rawSensor for now  
         self.localizer=localization(rawSensor)
@@ -75,11 +73,18 @@ class decision_maker(Node):
         vel_msg=Twist()
         
         # TODO Part 3: Check if you reached the goal
+        # set a placeholder error threshold
+        # need to tune this value in the lab
+        error_threshold = 1e-1
+        # only check linear error since orientation is not being planned
         if type(self.goal) == list:
-            reached_goal = (calculate_linear_error(self.localizer.getPose(), self.goal) < self.error_thresh) \
-                            and (calculate_angular_error(self.localizer.getPose(), self.goal) < self.error_thresh)
+            # trajectory planner
+            # self.goal type: [[x1,y1], ..., [xn,yn]]
+            reached_goal = calculate_linear_error(self.localizer.getPose(), self.goal[-1]) < error_threshold
         else: 
-            reached_goal = False
+            # point planner
+            # self.goal type: (x, y)
+            reached_goal = calculate_linear_error(self.localizer.getPose(), self.goal) < error_threshold
         
 
         if reached_goal:
@@ -95,8 +100,10 @@ class decision_maker(Node):
         velocity, yaw_rate = self.controller.vel_request(self.localizer.getPose(), self.goal, True)
 
         #TODO Part 4: Publish the velocity to move the robot
+        # populate linear and angular velocities in publisher message
         vel_msg.linear.x = velocity
         vel_msg.angular.z = yaw_rate
+        # send velocity command
         self.publisher.publish(vel_msg)
 
 import argparse
@@ -114,9 +121,9 @@ def main(args=None):
 
     # TODO Part 4: instantiate the decision_maker with the proper parameters for moving the robot
     if args.motion.lower() == "point":
-        DM=decision_maker(Twist, '/cmd_vel', odom_qos, [1.0, 1.0], 10, POINT_PLANNER)
+        DM=decision_maker(Twist, '/cmd_vel', odom_qos, motion_type=POINT_PLANNER)
     elif args.motion.lower() == "trajectory":
-        DM=decision_maker(Twist, '/cmd_vel', odom_qos, [-1.0, -1.0], 10, TRAJECTORY_PLANNER)
+        DM=decision_maker(Twist, '/cmd_vel', odom_qos, motion_type=TRAJECTORY_PLANNER)
     else:
         print("invalid motion type", file=sys.stderr)        
     
