@@ -33,7 +33,7 @@ class planner:
         step_size = 1e-1
         if trajectory_type == "parabola":
             x_vals = np.arange(0, 1.5, step_size)
-            y_vals = np.pow(x_vals, 2)
+            y_vals = np.power(x_vals, 2)
         elif trajectory_type == "sigmoid":
             x_vals = np.arange(0, 2.5, step_size)
             y_vals = 2 / (1 + np.exp(- 2 * x_vals))
@@ -43,5 +43,5 @@ class planner:
             y_vals = [0]
 
         # the return should be a list of trajectory points: [ [x1,y1], ..., [xn,yn]]
-        return [zip(x_vals, y_vals)]
+        return list(zip(x_vals, y_vals))
 

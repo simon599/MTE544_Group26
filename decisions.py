@@ -29,7 +29,7 @@ class decision_maker(Node):
         super().__init__("decision_maker")
 
         #TODO Part 4: Create a publisher for the topic responsible for robot's motion
-        self.publisher = (publisher_msg, publishing_topic, qos_publisher)
+        self.publisher = self.create_publisher(publisher_msg, publishing_topic, qos_publisher)
 
         publishing_period=1/rate
         
@@ -49,7 +49,7 @@ class decision_maker(Node):
             print("Error! you don't have this planner", file=sys.stderr)
 
         # set an error threshold
-        self.error_thresh = 1e-1
+        self.error_thresh = 1
 
         # Instantiate the localization, use rawSensor for now  
         self.localizer=localization(rawSensor)
@@ -64,7 +64,7 @@ class decision_maker(Node):
     def timerCallback(self):
         
         # TODO Part 3: Run the localization node
-        spin_once("localizer")
+        spin_once(self.localizer)
 
         # Remember that this file is already running the decision_maker node.
 
@@ -95,7 +95,6 @@ class decision_maker(Node):
         velocity, yaw_rate = self.controller.vel_request(self.localizer.getPose(), self.goal, True)
 
         #TODO Part 4: Publish the velocity to move the robot
-        vel_msg = Twist()
         vel_msg.linear.x = velocity
         vel_msg.angular.z = yaw_rate
         self.publisher.publish(vel_msg)
@@ -115,7 +114,7 @@ def main(args=None):
 
     # TODO Part 4: instantiate the decision_maker with the proper parameters for moving the robot
     if args.motion.lower() == "point":
-        DM=decision_maker(Twist, '/cmd_vel', odom_qos, [-1.0, -1.0], 10, POINT_PLANNER)
+        DM=decision_maker(Twist, '/cmd_vel', odom_qos, [1.0, 1.0], 10, POINT_PLANNER)
     elif args.motion.lower() == "trajectory":
         DM=decision_maker(Twist, '/cmd_vel', odom_qos, [-1.0, -1.0], 10, TRAJECTORY_PLANNER)
     else:

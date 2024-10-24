@@ -30,7 +30,7 @@ class localization(Node):
         if localizationType == rawSensor:
         # TODO Part 3: subscribe to the position sensor topic (Odometry)
         # Copied from tutorial 3
-            self.create_subscription(Odometry, "/odom", self.sub_callback,
+            self.create_subscription(Odometry, "/odom", self.odom_callback,
             qos_profile=odom_qos)
         else:
             print("This type doesn't exist", sys.stderr)
@@ -43,13 +43,13 @@ class localization(Node):
         y = pose_msg.pose.pose.position.y
         orientation_q = pose_msg.pose.pose.orientation
         # Convert quaternion to Euler angles
-        roll, pitch, yaw = euler_from_quaternion(orientation_q)
+        yaw = euler_from_quaternion(orientation_q)
         timestamp = Time.from_msg(pose_msg.header.stamp).nanoseconds
 
         self.pose=[x,y,yaw,timestamp]
         
         # Log the data
-        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
+        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], timestamp])
     
     def getPose(self):
         return self.pose
