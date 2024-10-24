@@ -12,11 +12,11 @@ class controller:
     
     
     # Default gains of the controller for linear and angular motions
-    def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2):
+    def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2, controller_type=P):
         
         # TODO Part 5 and 6: Modify the below lines to test your PD, PI, and PID controller
-        self.PID_linear=PID_ctrl(P, klp, klv, kli, filename_="linear.csv")
-        self.PID_angular=PID_ctrl(P, kap, kav, kai, filename_="angular.csv")
+        self.PID_linear=PID_ctrl(controller_type, klp, klv, kli, filename_="linear.csv")
+        self.PID_angular=PID_ctrl(controller_type, kap, kav, kai, filename_="angular.csv")
 
     
     def vel_request(self, pose, goal, status):
@@ -30,15 +30,16 @@ class controller:
         
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
 
-        # Turtlebot3 Burger Specifications
+        # (Simulation) Turtlebot3 Burger Specifications
         # https://emanual.robotis.com/docs/en/platform/turtlebot3/features/
-        linear_vel = 0.22 if linear_vel > 1.0 else linear_vel
-        angular_vel= 2.84 if angular_vel > 1.0 else angular_vel
+        linear_vel = 0.22 if linear_vel > 0.22 else linear_vel
+        angular_vel= 2.84 if angular_vel > 2.84 else angular_vel
 
-        # Turtlebot4 Specifications
-        # https://turtlebot.github.io/turtlebot4-user-manual/overview/features.html#hardware-specifications
-        linear_vel = 0.31 if linear_vel > 1.0 else linear_vel
-        angular_vel= 1.90 if angular_vel > 1.0 else angular_vel
+        # # (In-Lab) Turtlebot4 Specifications
+        # # https://turtlebot.github.io/turtlebot4-user-manual/overview/features.html#hardware-specifications
+        # # without safe mode maximum linear velocity: 0.46 m/s
+        # linear_vel = 0.31 if linear_vel > 0.31 else linear_vel
+        # angular_vel= 1.90 if angular_vel > 1.90 else angular_vel
         
         return linear_vel, angular_vel
     
@@ -64,15 +65,16 @@ class trajectoryController(controller):
 
         # TODO Part 5: Add saturation limits for the robot linear and angular velocity
 
-        # Turtlebot3 Burger Specifications
+        # (Simulation) Turtlebot3 Burger Specifications
         # https://emanual.robotis.com/docs/en/platform/turtlebot3/features/
-        linear_vel = 0.22 if linear_vel > 1.0 else linear_vel
-        angular_vel= 2.84 if angular_vel > 1.0 else angular_vel
+        linear_vel = 0.22 if linear_vel > 0.22 else linear_vel
+        angular_vel= 2.84 if angular_vel > 2.84 else angular_vel
 
-        # Turtlebot4 Specifications
-        # https://turtlebot.github.io/turtlebot4-user-manual/overview/features.html#hardware-specifications
-        linear_vel = 0.31 if linear_vel > 1.0 else linear_vel
-        angular_vel= 1.90 if angular_vel > 1.0 else angular_vel
+        # # (In-Lab) Turtlebot4 Specifications
+        # # https://turtlebot.github.io/turtlebot4-user-manual/overview/features.html#hardware-specifications
+        # # without safe mode maximum linear velocity: 0.46 m/s
+        # linear_vel = 0.31 if linear_vel > 0.31 else linear_vel
+        # angular_vel= 1.90 if angular_vel > 1.90 else angular_vel
         
         return linear_vel, angular_vel
 
