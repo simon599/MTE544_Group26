@@ -12,7 +12,7 @@ from rclpy import init, spin
 rawSensor = 0
 class localization(Node):
     
-    def __init__(self, localizationType=rawSensor):
+    def __init__(self, localizationType=rawSensor, motion_type="point_P"):
 
         super().__init__("localizer")
         
@@ -24,7 +24,7 @@ class localization(Node):
                             history=1,
                             depth=10)
         
-        self.loc_logger=Logger("robot_pose.csv", ["x", "y", "theta", "stamp"])
+        self.loc_logger=Logger(f"robot_pose_{motion_type}.csv", ["x", "y", "theta", "stamp"])
         self.pose=None
         
         if localizationType == rawSensor:

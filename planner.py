@@ -40,7 +40,7 @@ class planner:
 
         elif trajectory == SIGMOID_TRAJECTORY:
             x_vals = np.linspace(0, 2.5, N_POINTS)
-            y_vals = 2 / (1 + np.exp(- 2 * x_vals))
+            y_vals = (2 / (1 + np.exp(- 2 * x_vals))) - 1
 
         else:
             print("Error: unrecognized trajectory type.")
