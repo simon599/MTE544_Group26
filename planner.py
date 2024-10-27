@@ -8,7 +8,7 @@ POINT_PLANNER=0; TRAJECTORY_PLANNER=1
 PARABOLA_TRAJECTORY='parabola'; SIGMOID_TRAJECTORY='sigmoid'
 
 # Defines number of waypoints in specified trajectory
-# Needs to be tuned in the lab
+# Might need to be tuned in the lab
 N_POINTS = 15
 
 class planner:
@@ -33,7 +33,8 @@ class planner:
 
     # TODO Part 6: Implement the trajectories here
     def trajectory_planner(self, trajectory):
-        
+        # generate goal x positions using evenly spaced points in specified range
+        # generate goal y positions by applying specified function to x positions
         if trajectory == PARABOLA_TRAJECTORY:
             x_vals = np.linspace(0, 1.5, N_POINTS)
             y_vals = np.power(x_vals, 2)
@@ -44,7 +45,7 @@ class planner:
 
         else:
             print("Error: unrecognized trajectory type.")
-            # remain in current position
+            # set x and y positions to remain at the origin (0, 0)
             x_vals = [0]
             y_vals = [0]
 

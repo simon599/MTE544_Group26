@@ -116,7 +116,7 @@ def calculate_linear_error(current_pose, goal_pose):
     x_curr, y_curr, _, _ = current_pose
     x_goal, y_goal = goal_pose
 
-    # compute linear error between current and goal pose
+    # compute linear distance between current and goal pose
     error_linear = sqrt((x_goal - x_curr)**2 + (y_goal - y_curr)**2)
 
     return error_linear

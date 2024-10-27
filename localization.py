@@ -12,7 +12,7 @@ from rclpy import init, spin
 rawSensor = 0
 class localization(Node):
     
-    def __init__(self, localizationType=rawSensor, motion_type="point_P"):
+    def __init__(self, localizationType=rawSensor, file_suffix="point_P"):
 
         super().__init__("localizer")
         
@@ -24,7 +24,9 @@ class localization(Node):
                             history=1,
                             depth=10)
         
-        self.loc_logger=Logger(f"robot_pose_{motion_type}.csv", ["x", "y", "theta", "stamp"])
+        # Initialize logger for recording robot pose information
+        self.loc_logger=Logger(f"robot_pose_{file_suffix}.csv", ["x", "y", "theta", "stamp"])
+        # Initialize variable to store current robot pose
         self.pose=None
         
         if localizationType == rawSensor:
@@ -35,6 +37,7 @@ class localization(Node):
             print("This type doesn't exist", sys.stderr)
     
     
+    # Callback function to process incoming odometry messages
     def odom_callback(self, pose_msg):
         
         # TODO Part 3: Read x, y, theta, and record the stamp
@@ -45,11 +48,13 @@ class localization(Node):
         theta = euler_from_quaternion(orientation_quat)
         timestamp = pose_msg.header.stamp
 
+        # Update values for current robot position
         self.pose = [x, y, theta, timestamp]
         
         # Log the data
         self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
     
+    # Gunction to return the current robot pose
     def getPose(self):
         return self.pose
 
@@ -58,12 +63,15 @@ class localization(Node):
 # This is to make sure this node functions right before using it in decision.py
     
 if __name__ == '__main__':
-    # startup the localization node
+    # Iniialize the ROS2 client library
     init()
 
+    # Instantiate localization node
     localization_node = localization()
 
     try:
+        # Spin the node to keep it responsive to incoming messages
         spin(localization_node)
     except KeyboardInterrupt:
+        # Exit program gracefully
         print("Exiting")

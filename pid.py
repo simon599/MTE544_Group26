@@ -39,9 +39,11 @@ class PID_ctrl:
         
         latest_error=stamped_error[0]
         stamp=stamped_error[1]
-        
+
+        # Append the current error and timestamp to the history list
         self.history.append(stamped_error)        
         
+        # Maintain the desired length of the history list by removing oldest entry if required
         if (len(self.history) > self.history_length):
             self.history.pop(0)
         
@@ -54,10 +56,11 @@ class PID_ctrl:
         error_dot=0
         
         for i in range(1, len(self.history)):
-
+            # Convert timestamps to 'Time' objects for calculations
             t0=Time.from_msg(self.history[i-1][1])
             t1=Time.from_msg(self.history[i][1])
             
+            # Calculate time difference in seconds
             dt=(t1.nanoseconds - t0.nanoseconds) / 1e9
             
             dt_avg+=dt
@@ -66,19 +69,25 @@ class PID_ctrl:
             # for example dt=0.1 overwriting the calculation          
             
             # TODO Part 5: calculate the error dot 
+            # Calculate difference in error between current and previous timestamp
             error_diff = self.history[i][0] - self.history[i-1][0]
+            # Add error rate for each interval to the total error
             error_dot += error_diff / dt
             
+        # Average the derivative error over the history length
         error_dot/=len(self.history)
+        # Average the time interval between readings
         dt_avg/=len(self.history)
         
         # Compute the error integral
         sum_=0
         for hist in self.history:
             # TODO Part 5: Gather the integration
+            # Add each historical error value
             sum_ += hist[0]
             pass
         
+        # Multiple sum of errors by average time interval
         error_int = sum_ * dt_avg
         
         # TODO Part 4: Log your errors

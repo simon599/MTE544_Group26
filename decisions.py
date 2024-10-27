@@ -78,7 +78,7 @@ class decision_maker(Node):
         error_threshold = 1e-2
         # only check linear error since orientation is not being planned
         if type(self.goal) == list:
-            # trajectory planner
+            # trajectory planner - need to check if final waypoint has been reached
             # self.goal type: [[x1,y1], ..., [xn,yn]]
             reached_goal = calculate_linear_error(self.localizer.getPose(), self.goal[-1]) < error_threshold
         else: 
