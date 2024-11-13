@@ -61,9 +61,9 @@ class localization(Node):
         
         self.kf=kalman_filter(P,Q,R, x, dt)
         
-        # TODO Part 3: Use the odometry and IMU data for the EKF
-        self.odom_sub=message_filters.Subscriber(...)
-        self.imu_sub=message_filters.Subscriber(...)
+        # Use the odometry and IMU data for the EKF
+        self.odom_sub = message_filters.Subscriber(self, odom, "/odom")
+        self.imu_sub = message_filters.Subscriber(self, Imu, "/imu")
         
         time_syncher=message_filters.ApproximateTimeSynchronizer([self.odom_sub, self.imu_sub], queue_size=10, slop=0.1)
         time_syncher.registerCallback(self.fusion_callback)
