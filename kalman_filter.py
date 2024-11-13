@@ -18,7 +18,7 @@ class kalman_filter:
         
     # TODO Part 3: Replace the matrices with Jacobians where needed        
     def predict(self):
-
+        # state transition matrix A, measurement matrix C (in the lecture, C is matrix H)
         self.A = ...
         self.C = ...
         
@@ -26,7 +26,7 @@ class kalman_filter:
         
         self.P= np.dot( np.dot(self.A, self.P), self.A.T) + self.Q
 
-    # TODO Part 3: Replace the matrices with Jacobians where needed
+    # TODO Part 3: Replace the matrices with Jacobians where needed (already completed code)
     def update(self, z):
 
         S=np.dot(np.dot(self.C, self.P), self.C.T) + self.R
@@ -43,10 +43,10 @@ class kalman_filter:
     def measurement_model(self):
         x, y, th, w, v, vdot = self.x
         return np.array([
-            ...,# v
-            ...,# w
+            ...,# v longitudinal velocity
+            ...,# w rotation speed
             ..., # ax
-            ..., # ay
+            ..., # ay, rotation speed * linear velocity sp w * v
         ])
         
     # TODO Part 3: Impelment the motion model (state-transition matrice)
@@ -67,7 +67,7 @@ class kalman_filter:
 
 
     
-    def jacobian_A(self):
+    def jacobian_A(self): # jacobian between predict state over the previous state
         x, y, th, w, v, vdot = self.x
         dt = self.dt
         

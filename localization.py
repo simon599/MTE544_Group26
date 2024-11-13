@@ -58,7 +58,8 @@ class localization(Node):
         self.kf=kalman_filter(P,Q,R, x, dt)
         
         # TODO Part 3: Use the odometry and IMU data for the EKF
-        self.odom_sub=message_filters.Subscriber(...)
+        # message_filters.Subscriber(node, msg_type, topic_name, qos_profile=...), qos_profile is optional
+        self.odom_sub=message_filters.Subscriber(...) # the node should be 'self'
         self.imu_sub=message_filters.Subscriber(...)
         
         time_syncher=message_filters.ApproximateTimeSynchronizer([self.odom_sub, self.imu_sub], queue_size=10, slop=0.1)
@@ -73,16 +74,20 @@ class localization(Node):
         # the kalman filter should do a proper integration to provide x,y and filter ax,ay
         z=...
         
-        # Implement the two steps for estimation
+        # Implement the two steps for estimation 
+        # predict function from kalman_filter.py
+        # estimate function from kalman_filter.py
         ...
         
         # Get the estimate
         xhat=self.kf.get_states()
 
         # Update the pose estimate to be returned by getPose
+        # extract valyes from xhat
         self.pose=np.array(...)
 
         # TODO Part 4: log your data
+        # just add loggerHeaders from tut 6, use ay equation
         self.loc_logger.log_values(...)
       
     def odom_callback(self, pose_msg):
