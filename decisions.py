@@ -35,6 +35,8 @@ class decision_maker(Node):
         # TODO Part 3: use the Kalman Filter
         self.localizer=localization(type=kalmanFilter, dt=0.1) # set dt based on comments from Tutorial 6
         
+
+
         if motion_type==POINT_PLANNER:
             self.controller=controller(klp=0.2, klv=0.5, kap=0.8, kav=0.6)      
             self.planner=planner(POINT_PLANNER)
@@ -63,14 +65,14 @@ class decision_maker(Node):
     def timerCallback(self):
         
         spin_once(self.localizer)
-
+        
         if self.localizer.getPose() is  None:
             print("waiting for odom msgs ....")
             return
         
         
         vel_msg=Twist()
-
+        
         if self.motion_type == SPIRAL_4TUNE:
             self.linearVelocity += 0.01 if self.linearVelocity < 1.0 else 0.0
             vel_msg.linear.x=self.linearVelocity
