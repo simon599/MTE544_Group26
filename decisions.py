@@ -43,6 +43,7 @@ class decision_maker(Node):
         publishing_period=1/rate
 
         # TODO PART 5 choose your threshold
+        # tunable value
         self.reachThreshold=0.05
 
         # TODO PART 5 your localization type

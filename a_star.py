@@ -65,11 +65,13 @@ def search(maze, start, end):
 
     # TODO PART 4 Create start and end node with initized values for g, h and f
     # Use None as parent if not defined
+    # define start node using provided start position
     start_node = Node(None, start)
     start_node.g = 0     # cost from start Node
     start_node.h = calculate_distance(start, end)     # heuristic estimated cost to end Node
     start_node.f = start_node.g + start_node.h
 
+    # define end node using provided end position
     end_node = Node(None, end)
     end_node.g = sys.maxInt       # set a large value if not defined
     end_node.h = 0       # heuristic estimated cost to end Node
@@ -158,10 +160,11 @@ def search(maze, start, end):
         for new_position in move:
 
             # TODO PART 4 Get node position
-            node_position = (current_node.position[0] + new_position[0] + current_node.position[1] + new_position[1])
+            node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
 
             # TODO PART 4 Make sure within range (check if within maze boundary)
-            if (node_position[0] <= no_rows and node_position[0] >= 0 and node_position[1] <= no_columns and node_position[1] >= 0):
+            # continue to next position if not in range
+            if (node_position[0] > no_rows or node_position[0] < 0 or node_position[1] > no_columns or node_position[1] < 0):
                 continue
 
             # Make sure walkable terrain
@@ -199,12 +202,16 @@ def search(maze, start, end):
             # Add the child to the yet_to_visit list
             yet_to_visit_dict[child.position] = child
 
+
+# function to compute heuristic based on specified mode
 def calculate_distance(start_pos, end_pos, mode="EUCLIDEAN"):
     x_start, y_start = start_pos
     x_end, y_end = end_pos
 
+    # compute straight-line distance between start and end position
     if mode == "EUCLIDEAN":
         dist = np.sqrt(np.power(x_end - x_start, 2) + np.power(y_end - y_start, 2))
+    # comput distance of path along grid lines
     elif mode == "MANHATTAN":
         dist = np.abs(x_end - x_start) + np.abs(y_end - y_start)
     else:
