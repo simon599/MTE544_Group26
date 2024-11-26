@@ -46,7 +46,7 @@ class decision_maker(Node):
         self.reachThreshold=0.05
 
         # TODO PART 5 your localization type
-        self.localizer=localization(kalmanFilter, publishing_period)
+        self.localizer=localization(kalmanFilter)
 
 
         
