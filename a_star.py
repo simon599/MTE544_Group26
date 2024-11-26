@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from math import sqrt
@@ -64,15 +65,15 @@ def search(maze, start, end):
 
     # TODO PART 4 Create start and end node with initized values for g, h and f
     # Use None as parent if not defined
-    start_node = Node(...)
-    start_node.g = ...     # cost from start Node
-    start_node.h = ...     # heuristic estimated cost to end Node
-    start_node.f = ...
+    start_node = Node(None, start)
+    start_node.g = 0     # cost from start Node
+    start_node.h = calculate_distance(start, end)     # heuristic estimated cost to end Node
+    start_node.f = start_node.g + start_node.h
 
-    end_node = Node(...)
-    end_node.g = ...       # set a large value if not defined
-    end_node.h = ...       # heuristic estimated cost to end Node
-    end_node.f = ...
+    end_node = Node(None, end)
+    end_node.g = sys.maxInt       # set a large value if not defined
+    end_node.h = 0       # heuristic estimated cost to end Node
+    end_node.f = end_node.g + end_node.h
 
     # Initialize both yet_to_visit and visited dictionary
     # in this dict we will put all node that are yet_to_visit for exploration.
@@ -92,14 +93,14 @@ def search(maze, start, end):
 
     # TODO PART 4 what squares do we search . serarch movement is left-right-top-bottom
     # (4 or 8 movements) from every positon
-    move = [[...],  # go up
-            [...],  # go left
-            [...],  # go down
-            [...],  # go right
-            [...],  # go up left
-            [...],  # go down left
-            [...],  # go up right
-            [...]]  # go down right
+    move = [[0,1],  # go up
+            [-1, 0],  # go left
+            [0, -1],  # go down
+            [1, 0],  # go right
+            [-1, 1],  # go up left
+            [-1, -1],  # go down left
+            [1, 1],  # go up right
+            [1, -1]]  # go down right
 
     """
         1) We first get the current node by comparing all f cost and selecting the lowest cost node for further expansion
@@ -119,7 +120,7 @@ def search(maze, start, end):
                 d) else move the child to yet_to_visit dict
     """
     # TODO PART 4 find maze has got how many rows and columns
-    no_rows, no_columns = ...
+    no_rows, no_columns = maze.shape
 
     # Loop until you find the end
 
@@ -157,10 +158,10 @@ def search(maze, start, end):
         for new_position in move:
 
             # TODO PART 4 Get node position
-            node_position = (...)
+            node_position = (current_node.position[0] + new_position[0] + current_node.position[1] + new_position[1])
 
             # TODO PART 4 Make sure within range (check if within maze boundary)
-            if (...):
+            if (node_position[0] <= no_rows and node_position[0] >= 0 and node_position[1] <= no_columns and node_position[1] >= 0):
                 continue
 
             # Make sure walkable terrain
@@ -178,13 +179,14 @@ def search(maze, start, end):
         for child in children:
 
             # TODO PART 4 Child is on the visited dict (use get method to check if child is in visited dict, if not found then default value is False)
-            if ():
+            if (child in visited_dict.values()):
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            child.g = ...
+            child.g = child.parent.g + 1
+
             # Heuristic costs calculated here, this is using eucledian distance
-            child.h = ...
+            child.h = calculate_distance(child.position, end_node.position)
 
             child.f = child.g + child.h
 
@@ -196,3 +198,17 @@ def search(maze, start, end):
 
             # Add the child to the yet_to_visit list
             yet_to_visit_dict[child.position] = child
+
+def calculate_distance(start_pos, end_pos, mode="EUCLIDEAN"):
+    x_start, y_start = start_pos
+    x_end, y_end = end_pos
+
+    if mode == "EUCLIDEAN":
+        dist = np.sqrt(np.power(x_end - x_start, 2) + np.power(y_end - y_start, 2))
+    elif mode == "MANHATTAN":
+        dist = np.abs(x_end - x_start) + np.abs(y_end - y_start)
+    else:
+        print("Unrecognized Distance Mode")
+        dist = sys.maxint
+
+    return dist
