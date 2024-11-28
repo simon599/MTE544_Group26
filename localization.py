@@ -101,7 +101,21 @@ class localization(Node):
                             xhat[1],
                             normalize_angle(xhat[2]),
                             odom_msg.header.stamp])
-        
+
+        ax = imu_msg.linear_acceleration.x
+        ay = imu_msg.linear_acceleration.y 
+        self.loc_logger.log_values([
+            ax, 
+            ay,
+            xhat[5], 
+            xhat[3] * xhat[4],
+            xhat[4],
+            xhat[3],
+            xhat[0],
+            xhat[1],
+            Time.from_msg(odom_msg.header.stamp).nanoseconds
+        ])
+    
     def odom_callback(self, pose_msg):
         
         self.pose=[ pose_msg.pose.pose.position.x,
@@ -109,7 +123,7 @@ class localization(Node):
                     euler_from_quaternion(pose_msg.pose.pose.orientation),
                     pose_msg.header.stamp]
         
-        #self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
+        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
 
         
     def getPose(self):
