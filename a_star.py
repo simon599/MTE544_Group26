@@ -182,7 +182,7 @@ def search(maze, start, end):
         for child in children:
 
             # TODO PART 4 Child is on the visited dict (use get method to check if child is in visited dict, if not found then default value is False)
-            if (child in visited_dict.values()):
+            if (visited_dict.get(child.position, False)):
                 continue
 
             # TODO PART 4 Create the f, g, and h values
